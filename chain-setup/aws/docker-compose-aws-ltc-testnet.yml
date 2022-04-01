@@ -1,0 +1,143 @@
+version: "3"
+services:
+  side-car:
+    image: tarfeef101/s3_sidecar
+    env_file: .env.aws
+    environment:
+      - FILES=db/db_schema.sql
+    volumes:
+      - sh-ltc-testnet-v0-7-0-side-car:/opt/
+  db:
+    env_file: .env.aws
+    volumes:
+      - db-ltc-testnet-v0-7-0-data:/var/lib/postgresql/data
+      - sh-ltc-testnet-v0-7-0-side-car:/docker-entrypoint-initdb.d/
+    deploy:
+      resources:
+        reservations:
+          memory: 16Gb
+        limits:
+          memory: 16384M
+          cpus: '2'
+    depends_on:
+      - side-car
+  litecoind:
+    image: uphold/litecoin-core:0.17
+    networks:
+      - bitcoin
+    command: -rpcport=19332 -port=19335 -testnet=1 -dbcache=4000 -txindex=1 -server=1 -rpcallowip=0.0.0.0/0 -rpcbind=0.0.0.0 -zmqpubhashtx=tcp://0.0.0.0:28332 -zmqpubrawtx=tcp://0.0.0.0:28332 -rpcworkqueue=512 -rpcauth=bcn-admin:c71460f0f08e4eeec90e033c04f7bb82$c36e8561d46abbf3bf13da6b88612c19d758d46d02c45cd2716f06a13ec407af -wallet=defaultwallet
+    deploy:
+      resources:
+        limits:
+          memory: 16384M
+          cpus: '2'
+    ports:
+      - 19335:19335
+      - 19332:19332
+      - 28332:28332
+    volumes:
+      - bc-ltc-testnet-v0-7-0-data:/home/litecoin/.litecoin
+    depends_on:
+      - side-car
+  bcn:
+    image: 428034753515.dkr.ecr.us-east-2.amazonaws.com/bcn-repository:latest
+    env_file: .env.aws
+    deploy:
+      resources:
+        reservations:
+          memory: 16Gb
+        limits:
+          memory: 16384M
+          cpus: '2'
+    environment:
+      - BCN_ENV=prod
+      - RPC_PORT=19332
+      - RPC_HOST=litecoind
+      - ZMQ_URL=tcp://litecoind:28332
+      - CHAIN=LTC
+      - NETWORK=testnet
+      - BCN_URL=https://node.bitcoincomputer.io
+  sync:
+    command: npm run sync
+    image: 428034753515.dkr.ecr.us-east-2.amazonaws.com/bcn-repository:latest
+    env_file: .env.aws
+    depends_on:
+      - litecoind
+      - bcn
+      - db
+    deploy:
+      resources:
+        reservations:
+          memory: 16Gb
+        limits:
+          memory: 16384M
+          cpus: '2'
+    environment:
+      - BCN_ENV=prod
+      - CHAIN=LTC
+      - NETWORK=testnet
+      - ZMQ_URL=tcp://litecoind:28332
+      - BCN_URL=https://node.bitcoincomputer.io
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+      - RPC_PROTOCOL=http
+      - RPC_USER=${RPC_USER}
+      - RPC_PASSWORD=${RPC_PASSWORD}
+      - RPC_AUTH=${RPC_AUTH}
+      - RPC_HOST=litecoind
+      - RPC_PORT=19332
+      - DEFAULTWALLET=${DEFAULTWALLET}
+    networks:
+      - bitcoin
+      - bcn
+
+volumes:
+  sh-ltc-testnet-v0-7-0-side-car: {}
+  db-ltc-testnet-v0-7-0-data:
+  bc-ltc-testnet-v0-7-0-data:
+
+x-aws-loadbalancer: ltc-testnet-bc-node-v0-7-0
+x-aws-cloudformation:
+  Resources:
+    BcnService:
+      Properties:
+        HealthCheckGracePeriodSeconds: 2800000 #13 hs aprox
+    # Keep these lines that automatically defines properties for the load balancer
+    # To be switched from the old cluster to the new-format-version cluster.
+    # BcnTCP3000TargetGroup:
+    #   Properties:
+    #     Port: 3000
+    #     Protocol: TCP
+    #     Tags:
+    #     - Key: com.docker.compose.project
+    #       Value: ltc-testnet-cluster-v0.6.0
+    #     TargetType: ip
+    #     VpcId: vpc-00661fca497933772
+    #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    # BcnTCP80Listener:
+    #   Properties:
+    #     DefaultActions:
+    #     - ForwardConfig:
+    #         TargetGroups:
+    #         - TargetGroupArn:
+    #             Ref: BcnTCP3000TargetGroup
+    #       Type: forward
+    #     LoadBalancerArn: arn:aws:elasticloadbalancing:us-east-1:428034753515:loadbalancer/net/ltc-testnet-bc-node/a7868b3f0a5eb0df
+    #     Port: 80
+    #     Protocol: TCP
+    #   Type: AWS::ElasticLoadBalancingV2::Listener
+    # BcnTCP443Listener:
+    #   Properties:
+    #     DefaultActions:
+    #     - ForwardConfig:
+    #         TargetGroups:
+    #         - TargetGroupArn:
+    #             Ref: BcnTCP3000TargetGroup
+    #       Type: forward
+    #     LoadBalancerArn: arn:aws:elasticloadbalancing:us-east-1:428034753515:loadbalancer/net/ltc-testnet-bc-node/a7868b3f0a5eb0df
+    #     Certificates:
+    #     - CertificateArn: arn:aws:acm:us-east-1:428034753515:certificate/cdee9e26-6ed7-4d40-a6b2-37dc86b3e60d
+    #     Port: 443
+    #     Protocol: TLS
+    #     SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
+    #   Type: AWS::ElasticLoadBalancingV2::Listener
