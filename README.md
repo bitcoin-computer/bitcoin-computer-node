@@ -122,8 +122,10 @@ By default, the aws configure command will save the credentials in the file cat 
 4. Copy the file ``.env.aws.example`` into a file ``.env.aws`` in the root folder. Set the credentials already created and the AWS account name into the .env.aws environment file
 
 ```shell
-AWS_ACCESS_KEY_ID=<access-key-id-already-created>
-AWS_SECRET_ACCESS_KEY=<access-key-already-created>
+AWS_ECR_ACCESS_KEY_ID=<access-key-id-already-created>
+AWS_ECR_SECRET_ACCESS_KEY=<access-key-already-created>
+AWS_ECR_DEFAULT_REGION=us-east-2
+
 AWS_ACCOUNT=<account-id>.dkr.ecr.<selected-region>.amazonaws.com
 ```
 
