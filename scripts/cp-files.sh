@@ -9,7 +9,6 @@ cp ./README.md ../bitcoin-computer-node/
 cp ./.env.* ../bitcoin-computer-node/
 cp ./.gitignore ../bitcoin-computer-node/
 cp ./docker-compose.yml ../bitcoin-computer-node/
-cp ./Dockerfile ../bitcoin-computer-node/
 cp ./package.json ../bitcoin-computer-node/
 cp -r db/. ../bitcoin-computer-node/db/
 cp -r scripts/. ../bitcoin-computer-node/scripts/
