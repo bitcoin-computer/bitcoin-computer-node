@@ -39,7 +39,7 @@ services:
       ]
   bcn:
     build: .
-    image: bitcoin-computer-node-secret
+    image: bitcoin-computer-node
     env_file: .env
     depends_on:
       - db
@@ -55,7 +55,7 @@ services:
   sync:
     command: npm run sync
     build: .
-    image: bitcoin-computer-node-secret
+    image: bitcoin-computer-node
     env_file: .env
     depends_on:
       - db

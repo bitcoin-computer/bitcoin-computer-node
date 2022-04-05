@@ -33,7 +33,7 @@ services:
       - RPC_PASSWORD=kH4nU5Okm6-uyC0_mA5ztVNacJqZbYd_KGLl6mx722A=
     depends_on:
       - db
-    working_dir: /usr/src/app
+    working_dir: /src
     networks:
       - bitcoin
       - bcn

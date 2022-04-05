@@ -1,7 +1,7 @@
 {
   "name": "bitcoin-computer-node",
-  "version": "0.7.3-beta",
-  "private": false,
+  "version": "0.7.4-beta",
+  "private": true,
   "description": "",
   "keywords": [
     "Bitcoin",
@@ -23,7 +23,7 @@
     "node-clean": "./scripts/node-clean.sh",
     "dist-clean": "rm -rf dist",
     "build": "rollup -c",
-    "build-docker": "docker build -t bitcoin-computer-node-secret .",
+    "build-docker": "docker build -t bitcoin-computer-node .",
     "docker-hub-push": ". scripts/docker-setup.sh && docker_hub_push",
     "bitcoin-cli-ltc-regtest": ". scripts/bitcoin-cli-setup.sh && bitcoin_cli_ltc_regtest",
     "bitcoin-cli-btc-regtest": ". scripts/bitcoin-cli-setup.sh && bitcoin_cli_btc_regtest",
@@ -40,7 +40,7 @@
     "aws-login": ". scripts/aws-config.sh && aws_login",
     "aws-ltc-testnet": ". scripts/aws-setup.sh && aws_ltc_testnet",
     "aws-push-bcn-image": "exec bash -c '. scripts/aws-setup.sh && aws_push_bcn_image'",
-    "aws-ecr-login": ". scripts/aws-setup.sh && aws_ecr_login",
+    "aws-ecr-login": "exec bash -c '. scripts/aws-setup.sh && aws_ecr_login'",
     "aws-tag": ". scripts/aws-setup.sh && aws_tag",
     "test": "yarn test-ltc",
     "test-ltc": ". scripts/jest-setup.sh && test_ltc",
@@ -58,14 +58,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ClemensLey/bitcoin-computer-node-secret.git"
+    "url": "git+https://github.com/ClemensLey/bitcoin-computer-node.git"
   },
   "author": "Clemens Ley",
   "license": "CC-BY-ND-4.0",
   "bugs": {
-    "url": "https://github.com/ClemensLey/bitcoin-computer-node-secret/issues"
+    "url": "https://github.com/ClemensLey/bitcoin-computer-node/issues"
   },
-  "homepage": "https://github.com/ClemensLey/bitcoin-computer-node-secret#readme",
+  "homepage": "https://github.com/ClemensLey/bitcoin-computer-node#readme",
   "dependencies": {
     "bitcoin-computer-bitcore": "0.1.24",
     "bitcoin-computer-lib": "0.7.3-beta",

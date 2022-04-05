@@ -39,7 +39,7 @@ services:
       ]
   bcn:
     build: .
-    image: bitcoin-computer-node-secret
+    image: bitcoin-computer-node
     env_file: .env
     environment:
       - BCN_ENV=dev

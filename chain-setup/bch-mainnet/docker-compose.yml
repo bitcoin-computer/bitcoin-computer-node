@@ -33,7 +33,7 @@ services:
       - ./bitcoin.conf:/data/bitcoin.conf
   sync:
     build: ../../
-    image: bitcoin-computer-node-secret
+    image: bitcoin-computer-node
     command: npm run sync
     env_file:
       - ../../.env
@@ -48,7 +48,7 @@ services:
       - bcn
   bcn:
     build: ../../
-    image: bitcoin-computer-node-secret
+    image: bitcoin-computer-node
     command: npm start
     env_file:
       - ../../.env

@@ -24,7 +24,7 @@ yarn install
 yarn build-docker
 ```
 
-You can run the Bitcoin Broadcast server in your local machine, connecting to regtest, testnet or livenet (mainnet) network modes. When using regtest, the wallets must be found. So, you must launch the db, bitcoind and bcn services, and then fund the wallets.
+You can run the Bitcoin Computer Node in your local machine, connecting to regtest, testnet or livenet (mainnet) network modes. When using regtest, the wallets must be found. So, you must launch the db, bitcoind and bcn services, and then fund the wallets.
 
 To start the Bitcoin Computer Node on Litecoin (LTC) regtest run:
 
@@ -54,16 +54,6 @@ For local development following are the default seed phrases that get funded:
 * damp comfort scan couple absurd enter slogan cheap ketchup print syrup hurdle one document diamond
 * notable rose silver indicate wreck mean raise together jar fish seat air
 * lens release coil rain forward lemon cube satisfy inject visa ring segment
-
-<!--
-If any change is made over the Bitcoin Broadcast Server code, a re-build of the image will be needed. For Linux users, an script is provided (./scripts/prebuild) to change the ownership and group of the db_data and blockchain_data folders. The script can be run when receiving an error like the following:
-
-```shell
-error checking context: 'can't stat '/home/bitcoin-broadcast-server/chain-setup/ltc-regtest/db-data''.
-error Command failed with exit code 1.
-
-```
--->
 
 
 To stop the Bitcoin Computer Node run:
@@ -267,6 +257,44 @@ context requires credentials to be passed as environment variables
 ```
 
 3. While the deployment is in the creation state, different types of problems can occur. One of the most common errors seen on the console is getting an EFS error code, which causes the process to be suspended and the deployment to be into a "delete in progress" state. If the error obtained is the following: "TaskFailedToStart: ResourceInitializationError: failed to invoke EFS utils commands to set up EFS volumes: stderr: b'mount.nfs4: Connection reset by peer' : unsuccessful EFS utils command execution; code: 32", it is recommended to remove all the unlinked elastic file system volumes (if they do not contain relevant information) and run again the deployment.
+
+## Beta Warning
+
+This software has been carefully developed over four years by a qualified team. However it has not been security reviewed and we cannot guarantee the absence of bugs. Bugs can lead to the loss of funds. We do not recommend to use this software in production yet. Use at your own risk.
+
+We will remove the beta-tag once we have completed a security review.
+
+## Road Map
+
+Our prospectus road map is:
+
+* Fix all known security issues (getting close but not there yet)
+* Get security audit
+* Fix all issues discovered in audit
+* Launch secure version with long term support
+
+The interface to the Bitcoin Computer will not change so you can start developing applications now. When the security reviewed version lands all you need to do is update the dependency.
+
+## Price
+
+### Testnet
+
+The Bitcoin Computer will be free forever on testnet.
+
+### Mainnet
+
+You can run an application on mainnet using your own [Bitcoin Computer Node](https://www.npmjs.com/package/bitcoin-computer-node). The Bitcoin Computer charges either the dust limit or the sum of
+* 0.1% of the amount being sent,
+* a fixed-low-fee (as defined below) per smart object creation and update. This fee applies to nested objects, so if you update a smart object an one of it's sub-objects you have to pay two fixed-low-fee's. The fee does not apply to objects that can be garbage collected.
+
+The fixed-low-fee is calibrated to be around one USD cent on average. It depends on the chain. Specifically
+* on LTC the fixed-low-fee is 8000 satoshi
+* on BCH the fixed-low-fee is 2700 satoshi
+* on DOGE the fixed-low-fee is 7000000 satoshi
+* on BTC the fixed-low-fee is 22 satoshi
+
+This percentage is baked into every version of the Bitcoin Computer. All fees are automatically computed and collected by the Bitcoin Computer software. No action is required from the developer in order to pay the fees.
+
 
 ## Contributions
 
