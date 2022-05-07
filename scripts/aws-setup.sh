@@ -12,26 +12,26 @@ aws_tag() {
 aws_ecr_login() {
 
   # Reads credentials from .env.aws
-  AWS_ECR_ACCESS_KEY_ID=$(grep AWS_ECR_ACCESS_KEY_ID .env.aws | cut -d '=' -f2);
-  AWS_ECR_SECRET_ACCESS_KEY=$(grep AWS_ECR_SECRET_ACCESS_KEY .env.aws | cut -d '=' -f2);
-  AWS_ECR_DEFAULT_REGION=$(grep AWS_ECR_DEFAULT_REGION .env.aws | cut -d '=' -f2);
+  AWS_ACCESS_KEY_ID=$(grep AWS_ACCESS_KEY_ID .env.aws | cut -d '=' -f2);
+  AWS_SECRET_ACCESS_KEY=$(grep AWS_SECRET_ACCESS_KEY .env.aws | cut -d '=' -f2);
+  AWS_DEFAULT_REGION=$(grep AWS_DEFAULT_REGION .env.aws | cut -d '=' -f2);
   AWS_ACCOUNT=$(grep AWS_ACCOUNT .env.aws | cut -d '=' -f2);
 
-  if [[ ! $AWS_ECR_ACCESS_KEY_ID ]]
+  if [[ ! $AWS_ACCESS_KEY_ID ]]
   then
-    echo "[Error] AWS_ECR_ACCESS_KEY_ID variables not defined. Please, set the variables AWS_ECR_ACCESS_KEY_ID in .env.aws"
+    echo "[Error] AWS_ACCESS_KEY_ID variables not defined. Please, set the variables AWS_ACCESS_KEY_ID in .env.aws"
     exit 1
   fi
 
-  if [[ ! $AWS_ECR_SECRET_ACCESS_KEY ]]
+  if [[ ! $AWS_SECRET_ACCESS_KEY ]]
   then
-    echo "[Error] ! AWS_ECR_SECRET_ACCESS_KEY variables not defined. Please, set the variables AWS_ECR_SECRET_ACCESS_KEY in .env.aws"
+    echo "[Error] ! AWS_SECRET_ACCESS_KEY variables not defined. Please, set the variables AWS_SECRET_ACCESS_KEY in .env.aws"
     exit 1
   fi
 
-  if [[ ! $AWS_ECR_DEFAULT_REGION ]]
+  if [[ ! $AWS_DEFAULT_REGION ]]
   then
-    echo "[Error] AWS_ECR_DEFAULT_REGION variables not defined. Please, set the variables AWS_ECR_DEFAULT_REGION in .env.aws"
+    echo "[Error] AWS_DEFAULT_REGION variables not defined. Please, set the variables AWS_DEFAULT_REGION in .env.aws"
     exit 1
   fi
 
@@ -41,12 +41,12 @@ aws_ecr_login() {
     exit 1
   fi
 
-  echo "aws configure set aws_access_key_id AWS_ECR_ACCESS_KEY_ID"
-  aws configure set aws_access_key_id "$AWS_ECR_ACCESS_KEY_ID";
-  echo "aws configure set aws_secret_access_key AWS_ECR_SECRET_ACCESS_KEY"
-  aws configure set aws_secret_access_key $AWS_ECR_SECRET_ACCESS_KEY;
-  echo "aws configure set default.region AWS_ECR_DEFAULT_REGION"
-  aws configure set default.region $AWS_ECR_DEFAULT_REGION
+  echo "aws configure set aws_access_key_id AWS_ACCESS_KEY_ID"
+  aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID";
+  echo "aws configure set aws_secret_access_key AWS_SECRET_ACCESS_KEY"
+  aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY;
+  echo "aws configure set default.region AWS_DEFAULT_REGION"
+  aws configure set default.region $AWS_DEFAULT_REGION
 
   echo "yarn aws-login"
   # Loggin to docker with AWS credentials
@@ -73,9 +73,9 @@ aws_push_bcn_image() {
     # Loggin to AWS
     . ./scripts/aws-config.sh && aws_login
     # Tag the bcn image to project current version, and push it to AWS.
-    echo "Tagging bitcoin-computer-node-secret image to '$CURRENT_VERSION'"
-    docker tag bitcoin-computer-node-secret $(grep AWS_REPOSITORY .env.aws | cut -d '=' -f2):$CURRENT_VERSION;
-    echo "Pushing bitcoin-computer-node-secret to repository $AWS_REPOSITORY"
+    echo "Tagging bitcoin-computer-node image to '$CURRENT_VERSION'"
+    docker tag bitcoin-computer-node $(grep AWS_REPOSITORY .env.aws | cut -d '=' -f2):$CURRENT_VERSION;
+    echo "Pushing bitcoin-computer-node to repository $AWS_REPOSITORY"
     docker push $AWS_REPOSITORY:$CURRENT_VERSION
   fi
 }

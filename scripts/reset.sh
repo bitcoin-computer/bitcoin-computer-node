@@ -13,8 +13,6 @@ HOSTNAME=localhost
 
 psql "postgresql://$USERNAME:$PASSWORD@$HOSTNAME/$DATABASE" << EOF
 TRUNCATE TABLE "NonStandardTxos";
-TRUNCATE TABLE "Transactions";
-TRUNCATE TABLE "IdToRev";
 TRUNCATE TABLE "User";
 TRUNCATE TABLE "OffChainStore";
 TRUNCATE TABLE "SyncProgress";
