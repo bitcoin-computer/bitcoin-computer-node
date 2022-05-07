@@ -1,6 +1,8 @@
 {
   "testEnvironment": "node",
-  "testURL": "http://localhost:3000/",
+  "testEnvironmentOptions": {
+    "url": "http://localhost:3000/"
+  },
   "transform": {
     ".+\\.(ts)$": "ts-jest"
   },

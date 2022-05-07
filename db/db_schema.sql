@@ -1,26 +1,21 @@
 CREATE TABLE IF NOT EXISTS
   "NonStandardTxos" (
-    "id" BIGSERIAL PRIMARY KEY,
-    "publicKey" VARCHAR(66) NOT NULL,
-    "rev" VARCHAR(76) NOT NULL,
-    "spent" BOOLEAN NOT NULL,
+    "id" VARCHAR(70) NOT NULL PRIMARY KEY,
+    "rev" VARCHAR(70),
+    "publicKeys" VARCHAR(66)[],
     "contractName" VARCHAR(70),
     "contractHash" VARCHAR(64)
 );
 
 CREATE UNIQUE INDEX "NonStandardTxosUniqueIndex"
-ON "NonStandardTxos"("rev", "publicKey");
+ON "NonStandardTxos"("rev", "publicKeys");
 
 CREATE TABLE IF NOT EXISTS
-  "Transactions" (
-    "id" BYTEA PRIMARY KEY NOT NULL,
-    "tx" BYTEA NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS
-  "IdToRev" (
-    "id" VARCHAR(70) NOT NULL PRIMARY KEY,
-    "rev" VARCHAR(70) NOT NULL
+   "StandardUtxos" (
+     "rev" VARCHAR(70) NOT NULL PRIMARY KEY,
+     "address" VARCHAR(66) NOT NULL,
+     "satoshis" BIGINT NOT NULL,
+     "scriptPubKey" TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS

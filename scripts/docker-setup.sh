@@ -10,9 +10,9 @@ docker_install() {
 docker_hub_push() {
   if [[ "${PWD##*/}" == "bitcoin-computer-node" ]]
   then
-    docker tag bitcoin-computer-node-secret:latest $(grep DOCKER_ID .docker.config | cut -d '=' -f2)/bitcoin-computer-node-secret:$(grep IMAGE_VERSION .docker.config | cut -d '=' -f2)
+    docker tag bitcoin-computer-node:latest $(grep DOCKER_ID .docker.config | cut -d '=' -f2)/bitcoin-computer-node IMAGE_VERSION .docker.config | cut -d '=' -f2)
     docker login -u $(grep DOCKER_ID .docker.config | cut -d '=' -f2) -p $(grep DOCKER_PASSWORD .docker.config | cut -d '=' -f2)
-    docker push $(grep DOCKER_ID .docker.config | cut -d '=' -f2)/bitcoin-computer-node-secret:$(grep IMAGE_VERSION .docker.config | cut -d '=' -f2)
+    docker push $(grep DOCKER_ID .docker.config | cut -d '=' -f2)/bitcoin-computer-node:$(grep IMAGE_VERSION .docker.config | cut -d '=' -f2)
   else
     echo "Present directory is not bitcoin-computer-node"
   fi
